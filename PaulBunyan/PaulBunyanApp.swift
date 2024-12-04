@@ -11,7 +11,7 @@ import SwiftUI
 struct PaulBunyanApp: App {
     var body: some Scene {
         WindowGroup {
-            Root()
+            Root(categories: .preview)
         }
     }
 }

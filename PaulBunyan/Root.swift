@@ -8,17 +8,24 @@
 import SwiftUI
 
 struct Root: View {
+    let categories: Categories
+
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        TabView {
+            LogTab(categories: categories)
+                .tabItem {
+                    Label("Log", systemImage: "list.clipboard")
+                }
+
+            ReviewTab(categories: categories)
+                .tabItem {
+                    Label("Review", systemImage: "chart.xyaxis.line")
+                }
         }
-        .padding()
     }
 }
 
+
 #Preview {
-    Root()
+    Root(categories: .preview)
 }
