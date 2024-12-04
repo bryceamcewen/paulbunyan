@@ -19,6 +19,7 @@
 /* Begin PBXFileReference section */
 		1869814D2D000A98005B4D81 /* PaulBunyan.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PaulBunyan.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1869815D2D000A99005B4D81 /* PaulBunyanTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PaulBunyanTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		1869819A2D00129A005B4D81 /* PaulBunyan.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = PaulBunyan.xcodeproj; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -67,6 +68,11 @@
 				1869814D2D000A98005B4D81 /* PaulBunyan.app */,
 				1869815D2D000A99005B4D81 /* PaulBunyanTests.xctest */,
 			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		1869819D2D00129A005B4D81 /* Products */ = {
+			isa = PBXGroup;
 			name = Products;
 			sourceTree = "<group>";
 		};
@@ -149,6 +155,12 @@
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 1869814E2D000A98005B4D81 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 1869819D2D00129A005B4D81 /* Products */;
+					ProjectRef = 1869819A2D00129A005B4D81 /* PaulBunyan.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				1869814C2D000A98005B4D81 /* PaulBunyan */,

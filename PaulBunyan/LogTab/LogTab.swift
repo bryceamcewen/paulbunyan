@@ -9,20 +9,28 @@ import SwiftUI
 
 struct LogTab: View {
     let categories: Categories
-
+    
+    @State private var editingCategory: Category.ID?
+    
+    
     var cells: [Cell] {
         categories.saved.map { category in
             Cell(
                 category: category,
                 primaryAction: {
                     action(for: category)
+                },
+                editAction: {
+                    editingCategory = category.id
+                },
+                dataAction: {
+                    
                 }
             )
         }
     }
 
     func action(for category: Category) {
-        print("tapped \(category.name)")
     }
 
     var body: some View {
@@ -45,6 +53,16 @@ struct LogTab: View {
                                 .font(.title)
                         }
                     )
+                }
+            }
+            .navigationDestination(item: $editingCategory) { id in
+                if let category = categories.saved.first(where: { category in
+                    category.id == id
+                }) {
+                    Text(category.name)
+                        .navigationTitle(category.name)
+                } else {
+                    Text("Category not found")
                 }
             }
         }
