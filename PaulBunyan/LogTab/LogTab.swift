@@ -26,8 +26,27 @@ struct LogTab: View {
     }
 
     var body: some View {
-        LazyVGrid(columns: [.init(), .init()]) {
-            ForEach(cells) { $0 }
+        NavigationStack {
+            VStack {
+                LazyVGrid(columns: [.init(), .init()]) {
+                    ForEach(cells) { $0 }
+                }
+                Spacer(minLength: 0)
+            }
+            .navigationTitle("Bunyan")
+            .toolbar {
+                ToolbarItem {
+                    Button(
+                        action: {
+                            print("tapped plus button")
+                        },
+                        label: {
+                            Image(systemName: "plus")
+                                .font(.title)
+                        }
+                    )
+                }
+            }
         }
     }
 }
