@@ -8,8 +8,8 @@
 import SwiftUI
 
 extension LogTab {
-    struct Cell: View, Identifiable {
-        let category: Category
+    struct TapEventCategoryCell: View, Identifiable {
+        let category: DisplayableCategory<TapEntry>
         let primaryAction: () -> Void
         let editAction: () -> Void
         let dataAction: () -> Void
@@ -96,7 +96,7 @@ extension LogTab {
 }
 
 #Preview {
-    LogTab.Cell(
+    LogTab.TapEventCategoryCell(
         category: .init(
             name: "example",
             imageSystemName: "lightbulb",

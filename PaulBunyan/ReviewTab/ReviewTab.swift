@@ -117,17 +117,38 @@ struct ReviewTab: View {
                     .padding()
                 }
 
-                ScrollView(.vertical) {
-                    ForEach(categories.saved) { category in
-                        Section(category.name) {
-                            ForEach(category.entries) { entry in
-                                Cell(entry: entry)
-                            }
-                        }
+            }
+            .navigationTitle(navTitle)
+        }
+    }
+    
+    struct Scrollable: View {
+        let categories: [Category]
+        var body: some View {
+            ScrollView(.vertical) {
+                ForEach(categories) { category in
+                    CategorySection(category: category)
+                }
+            }
+        }
+        
+        struct CategorySection: View {
+            let category: Category
+            var body: some View {
+                Section(category.name) {
+                    switch category {
+                    case .tap(let tapCategory):
+                        LogTab.TapEventCategoryCell(
+                            category: tapCategory,
+                            primaryAction: {},
+                            editAction: {},
+                            dataAction: {}
+                        )
+                    case .value(let valueCategory):
+                        Text("Unimplemented")
                     }
                 }
             }
-            .navigationTitle(navTitle)
         }
     }
 }

@@ -12,26 +12,44 @@ struct LogTab: View {
     
     @State private var editingCategory: Category.ID?
     
+    struct Cell: View, Identifiable {
+        var id: UUID { category.id }
+        let category: Category
+        let primaryAction: () -> Void
+        let editAction: () -> Void
+
+        var body: some View {
+            switch category {
+            case .tap(let displayableCategory):
+                TapEventCategoryCell(
+                    category: displayableCategory,
+                    primaryAction: primaryAction,
+                    editAction: editAction,
+                    dataAction: {
+                        
+                    }
+                )
+            case .value(_):
+                Text("Unimplemented")
+            }
+        }
+    }
     
     var cells: [Cell] {
         categories.saved.map { category in
             Cell(
                 category: category,
                 primaryAction: {
-                    action(for: category)
+//                    action()
+                    print("Clicking the data button")
                 },
                 editAction: {
                     editingCategory = category.id
-                },
-                dataAction: {
-                    
                 }
             )
         }
     }
 
-    func action(for category: Category) {
-    }
 
     var body: some View {
         NavigationStack {
@@ -65,6 +83,17 @@ struct LogTab: View {
                     Text("Category not found")
                 }
             }
+        }
+    }
+}
+
+extension Category {
+    var name: String {
+        switch self {
+        case .tap(let category):
+            category.name
+        case .value(let category):
+            category.name
         }
     }
 }
