@@ -34,33 +34,95 @@ struct ReviewTab: View {
         "Time"
     }
 
-    private var categoryMenuTitle: String {
-        let value = selectedCategories
-            .compactMap({ id in
-                categories.saved.first(where: { $0.id == id })
-            })
-            .sorted(by: { $0.name < $1.name })
-            .map(\.name)
-            .joined(separator: ", ")
-        if value.isEmpty {
-            return "None"
-        } else {
-            return value
+    struct CategoryMenu: View {
+        let categories: Categories
+        @Binding var selectedCategories: Set<Category.ID>
+
+        private var title: String {
+            let value = selectedCategories
+                .compactMap({ id in
+                    categories.saved.first(where: { $0.id == id })
+                })
+                .sorted(by: { $0.name < $1.name })
+                .map(\.name)
+                .joined(separator: ", ")
+            if value.isEmpty {
+                return "None"
+            } else {
+                return value
+            }
+        }
+
+        private func toggle(category: Category) {
+            if selectedCategories.contains(category.id) { selectedCategories.remove(category.id)
+            } else {
+                selectedCategories.insert(category.id)
+            }
+        }
+        
+        var body: some View {
+            Menu(title) {
+                VStack {
+                    ForEach(categories.saved) { category in
+                        Button(
+                            action: {
+                                toggle(category: category)
+                            },
+                            label: {
+                                Text(category.name)
+                            }
+                        )
+                    }
+                }
+                .frame(maxWidth: .infinity, maxHeight: 100)
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .foregroundStyle(.white)
+            .padding()
+            .background {
+                RoundedRectangle(cornerRadius: 12)
+            }
+            .padding()
         }
     }
 
-    private var plotStyleMenuTitle: String {
-        selectedPlotStyle.name
-    }
+    struct PlotStyleMenu: View {
+        
+        @Binding var selectedPlotStyle: PlotStyle
 
-    private func choose(plotStyle: PlotStyle) {
-        selectedPlotStyle = plotStyle
-    }
+        private var plotStyleMenuTitle: String {
+            selectedPlotStyle.name
+        }
 
-    private func toggle(category: Category) {
-        if selectedCategories.contains(category.id) { selectedCategories.remove(category.id)
-        } else {
-            selectedCategories.insert(category.id)
+        private func choose(plotStyle: PlotStyle) {
+            selectedPlotStyle = plotStyle
+        }
+
+        var body: some View {
+            Menu(plotStyleMenuTitle) {
+                VStack {
+                    ForEach(PlotStyle.allCases) { plotStyle in
+                        Button(
+                            action: {
+                                choose(plotStyle: plotStyle)
+                            },
+                            label: {
+                                Text(plotStyle.name)
+                            }
+                        )
+                    }
+                }
+                .frame(maxWidth: .infinity, maxHeight: 100)
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .foregroundStyle(.white)
+            .padding()
+            .background {
+                RoundedRectangle(cornerRadius: 12)
+            }
+            .padding()
         }
     }
 
@@ -68,55 +130,17 @@ struct ReviewTab: View {
         NavigationStack {
             VStack {
                 HStack {
-                    Menu(categoryMenuTitle) {
-                        VStack {
-                            ForEach(categories.saved) { category in
-                                Button(
-                                    action: {
-                                        toggle(category: category)
-                                    },
-                                    label: {
-                                        Text(category.name)
-                                    }
-                                )
-                            }
-                        }
-                        .frame(maxWidth: .infinity, maxHeight: 100)
-                        .contentShape(Rectangle())
-                    }
-                    .buttonStyle(.plain)
-                    .foregroundStyle(.white)
-                    .padding()
-                    .background {
-                        RoundedRectangle(cornerRadius: 12)
-                    }
-                    .padding()
-
-                    Menu(plotStyleMenuTitle) {
-                        VStack {
-                            ForEach(PlotStyle.allCases) { plotStyle in
-                                Button(
-                                    action: {
-                                        choose(plotStyle: plotStyle)
-                                    },
-                                    label: {
-                                        Text(plotStyle.name)
-                                    }
-                                )
-                            }
-                        }
-                        .frame(maxWidth: .infinity, maxHeight: 100)
-                        .contentShape(Rectangle())
-                    }
-                    .buttonStyle(.plain)
-                    .foregroundStyle(.white)
-                    .padding()
-                    .background {
-                        RoundedRectangle(cornerRadius: 12)
-                    }
-                    .padding()
+                    CategoryMenu(
+                        categories: categories,
+                        selectedCategories: $selectedCategories
+                    )
+                    
+                    PlotStyleMenu(
+                        selectedPlotStyle: $selectedPlotStyle
+                    )
                 }
-
+                
+                Spacer(minLength: 0)
             }
             .navigationTitle(navTitle)
         }
