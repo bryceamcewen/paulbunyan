@@ -20,17 +20,24 @@ struct LogTab: View {
 
         var body: some View {
             switch category {
-            case .tap(let displayableCategory):
+            case .tap(let displayable):
                 TapEventCategoryCell(
-                    category: displayableCategory,
+                    category: displayable,
                     primaryAction: primaryAction,
-                    editAction: editAction,
-                    dataAction: {
+                    topButtons: .init(
+                        dataAction: {
+                            
+                        },
+                        editAction: editAction
+                    )
+                )
+            case .value(let displayable):
+                ValueEventCategoryCell(
+                    category: displayable,
+                    primaryAction: {
                         
                     }
                 )
-            case .value(_):
-                Text("Unimplemented")
             }
         }
     }

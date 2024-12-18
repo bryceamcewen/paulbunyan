@@ -162,11 +162,13 @@ struct ReviewTab: View {
                 Section(category.name) {
                     switch category {
                     case .tap(let tapCategory):
-                        LogTab.TapEventCategoryCell(
+                        TapEventCategoryCell(
                             category: tapCategory,
                             primaryAction: {},
-                            editAction: {},
-                            dataAction: {}
+                            topButtons: .init(
+                                dataAction: {},
+                                editAction: {}
+                            )
                         )
                     case .value(let valueCategory):
                         Text("Unimplemented")
