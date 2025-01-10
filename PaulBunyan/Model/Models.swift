@@ -30,6 +30,7 @@ struct DisplayableCategory<Entry>: Identifiable {
     var name: String
     var imageSystemName: String
     var entries: [Entry]
+    var description: String = "Description of category"
 }
 
 enum Entry: Identifiable {
@@ -80,7 +81,8 @@ extension Categories {
                     timestamp: .now.addingTimeInterval(-2),
                     location: .init(latitude: 1, longitude: 2)
                 ),
-            ]
+            ],
+            description: "Count of light turning off"
         )
         static let water: DisplayableCategory<ValueEntry> = .init(
             name: "Water",
@@ -118,12 +120,32 @@ extension Categories {
                 ),
             ]
         )
+        static let pulse: DisplayableCategory<TapEntry> = .init(
+            name: "Pulse",
+            imageSystemName: "bolt.heart",
+            entries: [
+                .init(
+                    timestamp: .now,
+                    location: .init(latitude: 1, longitude: 2)
+                ),
+                .init(
+                    timestamp: .now.addingTimeInterval(-1),
+                    location: .init(latitude: 1, longitude: 2)
+                ),
+                .init(
+                    timestamp: .now.addingTimeInterval(-2),
+                    location: .init(latitude: 1, longitude: 2)
+                ),
+            ],
+            description: "I measured my pulse"
+        )
     }
     static let preview: Self = .init(
         saved: [
             .tap(Example.lights),
             .value(Example.water),
             .value(Example.exercise),
+            .tap(Example.pulse),
         ]
     )
 }
