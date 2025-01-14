@@ -9,21 +9,12 @@
 import SwiftUI
 
 struct ValueEventCategoryCell: View, Identifiable {
-    let category: DisplayableCategory<ValueEntry>
+    let category: Category
+    let editingValue: Bool
     let primaryAction: () -> Void
-    
-    var topButtons: CellTopButtons {
-        .init(
-            dataAction: {
-                
-            },
-            editAction: {
-                editingValue = true
-            }
-        )
-    }
-    
-    @State private var editingValue: Bool = false
+    let topButtons: CellTopButtons
+    let onEditingDone: () -> Void
+
     @State private var value: String = ""
 
     var id: UUID { category.id }
@@ -37,9 +28,7 @@ struct ValueEventCategoryCell: View, Identifiable {
                             TextField("Value", text: $value)
                                 .font(.largeTitle)
                             
-                            Button("Done") {
-                                editingValue = false
-                            }
+                            Button("Done", action: onEditingDone)
                         } else {
                             topButtons
                                 .border(.yellow)
@@ -78,10 +67,19 @@ struct ValueEventCategoryCell: View, Identifiable {
         category: .init(
             name: "example",
             imageSystemName: "figure.disc.sports",
-            entries: []
+            mode: .value
         ),
+        editingValue: false,
         primaryAction: {
-            print("Valueped")
+            print("Valueped \(10)")
+        },
+        topButtons: .init(dataAction: {
+            
+        }, editAction: {
+            
+        }),
+        onEditingDone: {
+            
         }
     )
 }

@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct TapEventCategoryCell: View, Identifiable {
-    let category: DisplayableCategory<TapEntry>
+    let category: Category
     let primaryAction: () -> Void
     let topButtons: CellTopButtons
 
@@ -27,7 +27,9 @@ struct TapEventCategoryCell: View, Identifiable {
                         )
                         .border(.blue)
 
-                        topButtons.hidden()
+                        topButtons.hidden().overlay {
+                            Text("\(category.taps.count)")
+                        }
                             .border(.red)
                     }
                     .padding()
@@ -40,18 +42,19 @@ struct TapEventCategoryCell: View, Identifiable {
 }
 
 #Preview {
+    @Previewable @State var category: Category = Category.Example.lights
     TapEventCategoryCell(
-        category: .init(
-            name: "example",
-            imageSystemName: "lightbulb",
-            entries: []
-        ),
+        category: Category.Example.lights,
         primaryAction: {
             print("tapped")
         },
         topButtons: .init(
-            dataAction: {},
-            editAction: {}
+            dataAction: {
+                print("Tap view button tapped")
+            },
+            editAction: {
+                print("Tap edit button tapped")
+            }
         )
     )
 }

@@ -9,9 +9,10 @@ import SwiftUI
 
 @main
 struct PaulBunyanApp: App {
+    @State private var categories: Categories = .preview
     var body: some Scene {
         WindowGroup {
-            Root(categories: .preview)
+            Root(categories: $categories)
         }
     }
 }

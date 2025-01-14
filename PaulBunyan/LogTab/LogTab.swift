@@ -8,35 +8,52 @@
 import SwiftUI
 
 struct LogTab: View {
-    let categories: Categories
+    @Binding var categories: Categories
     
     @State private var editingCategory: Category.ID?
     @State private var descriptionBinding: String = ""
+    
+    struct Root: View {
+        let cells: [Cell]
+        var body: some View {
+            VStack {
+                LazyVGrid(columns: [.init(), .init()]) {
+                    ForEach(cells) { $0 }
+                }
+                Spacer(minLength: 0)
+            }
+        }
+    }
     
     struct Cell: View, Identifiable {
         var id: UUID { category.id }
         let category: Category
         let primaryAction: () -> Void
+        let dataAction: () -> Void
         let editAction: () -> Void
 
         var body: some View {
-            switch category {
-            case .tap(let displayable):
+            switch category.mode {
+            case .tap:
                 TapEventCategoryCell(
-                    category: displayable,
+                    category: category,
                     primaryAction: primaryAction,
                     topButtons: .init(
-                        dataAction: {
-                            
-                        },
+                        dataAction: dataAction,
                         editAction: editAction
                     )
                 )
-            case .value(let displayable):
+            case .value:
                 ValueEventCategoryCell(
-                    category: displayable,
-                    primaryAction: {
-                        print("Value = ")
+                    category: category,
+                    editingValue: true,
+                    primaryAction: primaryAction,
+                    topButtons: .init(
+                        dataAction: dataAction,
+                        editAction: editAction
+                    ),
+                    onEditingDone: {
+                        
                     }
                 )
             }
@@ -44,12 +61,24 @@ struct LogTab: View {
     }
     
     var cells: [Cell] {
-        categories.saved.map { category in
+        categories.list.map { category in
             Cell(
                 category: category,
                 primaryAction: {
-//                    action()
-                    print("Clicking the data button")
+                    var copy = category
+                    copy.taps.append(
+                        .init(
+                            timestamp: .now,
+                            location: .init(
+                                latitude: 0.0,
+                                longitude: 0.0
+                            )
+                        )
+                    )
+                    self.categories.saved[copy.id] = copy
+                },
+                dataAction: {
+                    
                 },
                 editAction: {
                     print("Clicking the edit button")
@@ -62,86 +91,59 @@ struct LogTab: View {
 
     var body: some View {
         NavigationStack {
-            VStack {
-                LazyVGrid(columns: [.init(), .init()]) {
-                    ForEach(cells) { $0 }
-                }
-                Spacer(minLength: 0)
-            }
+            Root(
+                cells: cells
+            )
             .navigationTitle("Bunyan")
             .toolbar {
                 ToolbarItem {
-                    Button(
-                        action: {
-                            print("tapped plus button")
-                        },
-                        label: {
-                            Image(systemName: "plus")
-                                .font(.title)
-                        }
-                    )
+                    AddButton {
+                        print("action")
+                    }
                 }
             }
             .navigationDestination(item: $editingCategory) { id in
-                if let category = categories.saved.first(where: { category in
-                    category.id == id
-                }) {
-                    //descriptionBinding = category.description
-                    CategoryDetail(category: category)
-
-                } else {
-                    Text("Category not found")
-                }
+                Destinations(categories: categories, selected: id)
             }
         }
     }
+    
+    struct Destinations: View {
+        let categories: Categories
+        let selected: Category.ID
+        var body: some View {
+            if let category = categories.saved[selected] {
+                //descriptionBinding = category.description
+                CategoryDetail(category: category)
+
+            } else {
+                Text("Category not found")
+            }
+
+        }
+    }
 }
 
-extension Category {
-    var name: String {
-        switch self {
-        case .tap(let category):
-            category.name
-        case .value(let category):
-            category.name
-        }
-    }
-    var imageName: String {
-        switch self {
-        case .tap(let category):
-            category.imageSystemName
-        case .value(let category):
-            category.imageSystemName
-        }
-        
-    }
-    var description: String {
-        switch self {
-        case .tap(let category):
-            category.description
-        case .value(let category):
-            category.description
-        }
-    }
-}
+
 
 #Preview {
-    LogTab(categories: .preview)
+    @Previewable @State var categories: Categories = .preview
+    LogTab(categories: $categories)
 }
 
-struct CategoryDetail: View {
-    let category: Category
+
+
+struct AddButton: View {
+    let action: () -> Void
     var body: some View {
-        VStack {
-            Text(category.name)
-                .navigationTitle("Modifying \(category.name)")
-            CenterCellImage(
-                systemImage: category.imageName
-            )
-            
-            Text(category.description)
-                .font(.largeTitle)
-            
-        }
+        Button(
+            action: action,
+            label: {
+                Image(systemName: "plus")
+                    .font(.title)
+            }
+        )
     }
+    
 }
+

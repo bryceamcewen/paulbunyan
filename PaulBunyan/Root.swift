@@ -8,11 +8,11 @@
 import SwiftUI
 
 struct Root: View {
-    let categories: Categories
+    @Binding var categories: Categories
 
     var body: some View {
         TabView {
-            LogTab(categories: categories)
+            LogTab(categories: $categories)
                 .tabItem {
                     Label("Log", systemImage: "list.clipboard")
                 }
@@ -27,5 +27,6 @@ struct Root: View {
 
 
 #Preview {
-    Root(categories: .preview)
+    @Previewable @State var categories: Categories = .preview
+    Root(categories: $categories)
 }

@@ -8,30 +8,16 @@
 import Foundation
 
 struct Categories {
-    let saved: [Category]
-}
-
-enum Category: Identifiable {
-    var id: UUID {
-        switch self {
-        case .tap(let category):
-            category.id
-        case .value(let category):
-            category.id
+    var saved: [Category.ID: Category]
+    var list: [Category] {
+        saved.values.sorted {
+            $0.created < $1.created
         }
     }
-
-    case tap(DisplayableCategory<TapEntry>)
-    case value(DisplayableCategory<ValueEntry>)
 }
 
-struct DisplayableCategory<Entry>: Identifiable {
-    var id: UUID = .init()
-    var name: String
-    var imageSystemName: String
-    var entries: [Entry]
-    var description: String = "Description of category"
-}
+
+
 
 enum Entry: Identifiable {
     var id: Date {
@@ -63,89 +49,3 @@ struct Coordinates {
     let longitude: Double
 }
 
-extension Categories {
-    enum Example {
-        static let lights: DisplayableCategory<TapEntry> = .init(
-            name: "Lights",
-            imageSystemName: "lightbulb",
-            entries: [
-                .init(
-                    timestamp: .now,
-                    location: .init(latitude: 1, longitude: 2)
-                ),
-                .init(
-                    timestamp: .now.addingTimeInterval(-1),
-                    location: .init(latitude: 1, longitude: 2)
-                ),
-                .init(
-                    timestamp: .now.addingTimeInterval(-2),
-                    location: .init(latitude: 1, longitude: 2)
-                ),
-            ],
-            description: "Count of light turning off"
-        )
-        static let water: DisplayableCategory<ValueEntry> = .init(
-            name: "Water",
-            imageSystemName: "drop",
-            entries: [
-                .init(
-                    timestamp: .now,
-                    value: 1.0
-                ),
-                .init(
-                    timestamp: .now.addingTimeInterval(-1),
-                    value: 0.5
-                ),
-                .init(
-                    timestamp: .now.addingTimeInterval(-2),
-                    value: 1.0
-                ),
-            ]
-        )
-        static let exercise: DisplayableCategory<ValueEntry> = .init(
-            name: "Exercise",
-            imageSystemName: "figure.pool.swim",
-            entries: [
-                .init(
-                    timestamp: .now,
-                    value: 60.0
-                ),
-                .init(
-                    timestamp: .now.addingTimeInterval(-1),
-                    value: 120.0
-                ),
-                .init(
-                    timestamp: .now.addingTimeInterval(-2),
-                    value: 30.0
-                ),
-            ]
-        )
-        static let pulse: DisplayableCategory<TapEntry> = .init(
-            name: "Pulse",
-            imageSystemName: "bolt.heart",
-            entries: [
-                .init(
-                    timestamp: .now,
-                    location: .init(latitude: 1, longitude: 2)
-                ),
-                .init(
-                    timestamp: .now.addingTimeInterval(-1),
-                    location: .init(latitude: 1, longitude: 2)
-                ),
-                .init(
-                    timestamp: .now.addingTimeInterval(-2),
-                    location: .init(latitude: 1, longitude: 2)
-                ),
-            ],
-            description: "I measured my pulse"
-        )
-    }
-    static let preview: Self = .init(
-        saved: [
-            .tap(Example.lights),
-            .value(Example.water),
-            .value(Example.exercise),
-            .tap(Example.pulse),
-        ]
-    )
-}

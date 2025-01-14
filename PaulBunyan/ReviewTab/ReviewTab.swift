@@ -41,7 +41,7 @@ struct ReviewTab: View {
         private var title: String {
             let value = selectedCategories
                 .compactMap({ id in
-                    categories.saved.first(where: { $0.id == id })
+                    categories.saved[id]
                 })
                 .sorted(by: { $0.name < $1.name })
                 .map(\.name)
@@ -63,7 +63,7 @@ struct ReviewTab: View {
         var body: some View {
             Menu(title) {
                 VStack {
-                    ForEach(categories.saved) { category in
+                    ForEach(categories.list) { category in
                         Button(
                             action: {
                                 toggle(category: category)
@@ -160,17 +160,17 @@ struct ReviewTab: View {
             let category: Category
             var body: some View {
                 Section(category.name) {
-                    switch category {
-                    case .tap(let tapCategory):
+                    switch category.mode {
+                    case .tap:
                         TapEventCategoryCell(
-                            category: tapCategory,
+                            category: category,
                             primaryAction: {},
                             topButtons: .init(
                                 dataAction: {},
                                 editAction: {}
                             )
                         )
-                    case .value(let valueCategory):
+                    case .value:
                         Text("Unimplemented")
                     }
                 }
@@ -179,6 +179,6 @@ struct ReviewTab: View {
     }
 }
 
-#Preview {
-    ReviewTab(categories: .preview)
-}
+//#Preview {
+//    ReviewTab(categories: .preview)
+//}
